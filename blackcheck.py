@@ -27,7 +27,7 @@ def check_url(to_search):
                         stop_threads = True
             except requests.Timeout as e:
                 pass
-        q.task_done()          # tell the queue, this url downloading work is done
+        q.task_done()          # Tell the Queue, this url is done
 
 def blacklist(to_search):
     '''Start 4 threads'''
@@ -36,7 +36,7 @@ def blacklist(to_search):
     for i in range(thread_num):
         t_worker = Thread(target=check_url(to_search))
         t_worker.start()
-    q.join()                   # main thread wait until all url finished downloading
+    q.join()                   # Main Thread wait until all url finished 
 
 '''VirusTotal '''
 def virustotal(to_search, what_search):
@@ -63,8 +63,8 @@ def virustotal(to_search, what_search):
     print("Timeout: " + str(last_analysis_stats['timeout']))
     print("\n")
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='blackcheck.py') 
     group = parser.add_mutually_exclusive_group(required=True)
@@ -72,6 +72,7 @@ if __name__ == "__main__":
     group.add_argument('-d', '--domain', dest='domain', type=str, help='Domain to search')
     parser.add_argument('-b', '--blacklist', dest='blacklist', action='store_true', help='Search on Blacklist')
     parser.add_argument('-v', '--virustotal', dest='virustotal', action='store_true', help='Search on VirusTotal')
+    parser.add_argument('-l', '--list', dest='url_list', type=str, default="lists_url.txt", help='File with the url of blacklists')
     parser.add_argument('-t', '--thread', dest='threads', type=int, default=4, help='Number of thread')
 
     args = parser.parse_args()
@@ -84,7 +85,7 @@ if __name__ == "__main__":
     to_search = args.ip or args.domain
 
     q = Queue(maxsize=0)            #Use a queue to store all URLs
-    file_url = open("lists_url.txt", "r")
+    file_url = open(args.url_list, "r")
     count_url = 0
     for url in file_url:
         q.put(url.strip())
