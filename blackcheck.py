@@ -2,9 +2,7 @@ import requests, json
 from requests.sessions import Session
 import time, sys, argparse
 from threading import Thread,local
-from Queue import Queue
-
-from config import API_Key_Virustotal 
+import queue as Queue
 
 
 def get_session():
@@ -84,7 +82,7 @@ if __name__ == "__main__":
 
     to_search = args.ip or args.domain
 
-    q = Queue(maxsize=0)            #Use a queue to store all URLs
+    q = Queue.Queue(maxsize=0)            #Use a queue to store all URLs
     file_url = open(args.url_list, "r")
     count_url = 0
     for url in file_url:
@@ -101,6 +99,7 @@ if __name__ == "__main__":
         blacklist(to_search)
 
     if args.virustotal:
+        from config import API_Key_Virustotal
         print("Start VirusTotal\n")
         
         what_search = "ip_addresses" if args.ip else "domains"
